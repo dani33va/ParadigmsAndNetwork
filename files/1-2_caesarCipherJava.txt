@@ -1,0 +1,52 @@
+package caesarCipher;
+
+
+public class Main {
+    public static void main(String[] args) {
+        String originalText = "Totally normal text to check if this works";
+        int shift = 12;
+        
+        CaesarCipher cipher = new CaesarCipher(shift);
+        
+        String encoded = cipher.encode(originalText);
+        String decoded = cipher.decode(encoded);
+        
+        System.out.println("Original: " + originalText);
+        System.out.println("Encoded:  " + encoded);
+        System.out.println("Decoded:  " + decoded);
+    }
+}
+
+
+public class CaesarCipher {
+    private int shift;
+    
+    public CaesarCipher(int shift) {
+        this.shift = shift % 26;
+        if (this.shift < 0) {
+            this.shift += 26;
+        }
+    }
+    
+    public String encode(String text) {
+        StringBuilder encoded = new StringBuilder();
+        for (char character : text.toCharArray()) {
+            if (Character.isLetter(character)) {
+                char base = Character.isUpperCase(character) ? 'A' : 'a';
+                encoded.append((char) (base + (character - base + shift) % 26));
+            } else {
+                encoded.append(character);
+            }
+        }
+        return encoded.toString();
+    }
+    
+    public String decode(String text) {
+        CaesarCipher decoder = new CaesarCipher(26 - shift);
+        return decoder.encode(text);
+    }
+    
+    public int getShift() {
+        return shift;
+    }
+}

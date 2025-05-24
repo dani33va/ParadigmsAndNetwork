@@ -1,0 +1,30 @@
+import string
+
+def caesar(s, k=13, decode=False):
+    # Adjust the shift for decoding
+    if decode:
+        k = 26 - k
+    
+    # Ensure the shift is within 0-25
+    k = k % 26
+    
+    # Create translation tables for uppercase and lowercase letters
+    uppercase_shifted = string.ascii_uppercase[k:] + string.ascii_uppercase[:k]
+    lowercase_shifted = string.ascii_lowercase[k:] + string.ascii_lowercase[:k]
+    
+    # Combine the original and shifted characters
+    original_chars = string.ascii_uppercase + string.ascii_lowercase
+    shifted_chars = uppercase_shifted + lowercase_shifted
+    
+    # Create the translation table
+    translation_table = str.maketrans(original_chars, shifted_chars)
+    
+    # Apply the translation
+    return s.translate(translation_table)
+
+# Example usage
+encoded_text = caesar("Totally normal text to check if this works", k=24)  
+print(encoded_text)  
+
+decoded_text = caesar(encoded_text, k=24, decode=True)
+print(decoded_text)

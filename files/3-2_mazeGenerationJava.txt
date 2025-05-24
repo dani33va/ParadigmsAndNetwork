@@ -1,0 +1,180 @@
+package mazeGeneration;
+
+import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
+
+public class MazeGenerator {
+    private final Maze maze;
+    
+    public MazeGenerator(int width, int height) {
+        this.maze = new Maze(width, height);
+        generateMaze(0, 0);
+    }
+    
+    public void display() {
+        MazeRenderer.render(maze);
+    }
+    
+    private void generateMaze(int cx, int cy) {
+        List<Direction> directions = Arrays.asList(Direction.values());
+        Collections.shuffle(directions);
+        
+        for (Direction dir : directions) {
+            int nx = cx + dir.getDx();
+            int ny = cy + dir.getDy();
+            
+            if (maze.isWithinBounds(nx, ny)) {
+                Cell currentCell = maze.getCell(cx, cy);
+                Cell nextCell = maze.getCell(nx, ny);
+                
+                if (nextCell.isUnvisited()) {
+                    currentCell.removeWall(dir);
+                    nextCell.removeWall(dir.getOpposite());
+                    generateMaze(nx, ny);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        int width = args.length >= 1 ? (Integer.parseInt(args[0])) : 8;
+        int height = args.length == 2 ? (Integer.parseInt(args[1])) : 8;
+        
+        MazeGenerator mazeGenerator = new MazeGenerator(width, height);
+        mazeGenerator.display();
+    }
+}
+
+
+public class MazeRenderer {
+	 public static void render(Maze maze) {
+	        for (int y = 0; y < maze.getHeight(); y++) {
+	            // Draw the north edge
+	            for (int x = 0; x < maze.getWidth(); x++) {
+	                System.out.print(maze.getCell(x, y).hasWall(Direction.N) ? "+---" : "+   ");
+	            }
+	            System.out.println("+");
+	            
+	            // Draw the west edge
+	            for (int x = 0; x < maze.getWidth(); x++) {
+	                System.out.print(maze.getCell(x, y).hasWall(Direction.W) ? "|   " : "    ");
+	            }
+	            System.out.println("|");
+	        }
+	        
+	        // Draw the bottom line
+	        for (int x = 0; x < maze.getWidth(); x++) {
+	            System.out.print("+---");
+	        }
+	        System.out.println("+");
+	    }
+
+}
+
+
+public class Maze {
+    private final int width;
+    private final int height;
+    private final Cell[][] grid;
+    
+    public Maze(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.grid = new Cell[width][height];
+        initializeGrid();
+    }
+    
+    private void initializeGrid() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                grid[x][y] = new Cell();
+            }
+        }
+    }
+    
+    public boolean isWithinBounds(int x, int y) {
+        return (x >= 0) && (x < width) && (y >= 0) && (y < height);
+    }
+    
+    public Cell getCell(int x, int y) {
+        return grid[x][y];
+    }
+    
+    public int getWidth() {
+        return width;
+    }
+    
+    public int getHeight() {
+        return height;
+    }
+
+}
+
+public enum Direction {
+    N(1, 0, -1), 
+    S(2, 0, 1), 
+    E(4, 1, 0), 
+    W(8, -1, 0);
+    
+    private final int bit;
+    private final int dx;
+    private final int dy;
+    private Direction opposite;
+    
+    static {
+        N.opposite = S;
+        S.opposite = N;
+        E.opposite = W;
+        W.opposite = E;
+    }
+    
+    Direction(int bit, int dx, int dy) {
+        this.bit = bit;
+        this.dx = dx;
+        this.dy = dy;
+    }
+    
+    public int getBit() {
+        return bit;
+    }
+    
+    public int getDx() {
+        return dx;
+    }
+    
+    public int getDy() {
+        return dy;
+    }
+    
+    public Direction getOpposite() {
+        return opposite;
+    }
+
+}
+
+
+public class Cell {
+    private int walls;
+    
+    public Cell() {
+        this.walls = 0; // All walls initially present
+    }
+    
+    public boolean isUnvisited() {
+        return walls == 0;
+    }
+    
+    public void removeWall(Direction dir) {
+        walls |= dir.getBit();
+    }
+    
+    public boolean hasWall(Direction dir) {
+        return (walls & dir.getBit()) == 0;
+    }
+    
+    public int getWalls() {
+        return walls;
+    }
+
+}

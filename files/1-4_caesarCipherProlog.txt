@@ -1,0 +1,26 @@
+:- use_module(library(clpfd)).
+
+caesar :-
+    L1 = 'this is a totally normal string to test',
+    atom_chars(L1, Chars),
+    maplist(char_code, Chars, Codes1),
+    
+    format("Original: ~s\n", [Codes1]),
+    
+    % Encryption
+    maplist(caesar_cipher(3), Codes1, Codes2),
+    format("Encoded: ~s\n", [Codes2]),
+    
+    % Decryption
+    maplist(caesar_cipher(-3), Codes2, Codes3),
+    format("Decoded: ~s\n", [Codes3]).
+
+caesar_cipher(Key, V1, V2) :-
+    (   between(97, 122, V1) ->  % Lowercase
+        Offset is (V1 - 97 + Key) mod 26,
+        V2 is Offset + 97
+    ;   between(65, 90, V1) ->   % Uppercase
+        Offset is (V1 - 65 + Key) mod 26,
+        V2 is Offset + 65
+    ;   V2 = V1
+    ).

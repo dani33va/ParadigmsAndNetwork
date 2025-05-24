@@ -1,0 +1,69 @@
+open System
+
+module Game =
+    let generateNumber targetSize =
+        let rnd = Random()
+        let rec generate() = seq {
+            yield rnd.Next(1, 9)
+            yield! generate()
+        }
+        generate() 
+        |> Seq.distinct 
+        |> Seq.take targetSize 
+        |> Seq.toList
+
+    let countBulls guess target =
+        List.zip guess target
+        |> List.filter (fun (g, t) -> g = t)
+        |> List.length
+
+    let countCows guess target =
+        let isCow g = List.exists ((=) g)
+        guess
+        |> List.sumBy (fun g -> if isCow g target then 1 else 0)
+
+    let countScore guess target =
+        let bulls = countBulls guess target
+        let cows = countCows guess target - bulls // Subtract bulls to avoid double-counting
+        (bulls, cows)
+
+    let playRound = countScore
+
+    let lineToList (line: string) =
+        line 
+        |> Seq.map (string >> int) 
+        |> Seq.toList
+
+    let validateInput (line: string) =
+        if String.IsNullOrEmpty line then
+            Error "Input guess cannot be empty!"
+        elif line.Length <> 4 then
+            Error "Input guess must be 4 characters!"
+        else
+            Ok (lineToList line)
+
+    let rec readInput() =
+        match Console.ReadLine() |> validateInput with
+        | Ok guess -> guess
+        | Error msg ->
+            printfn "%s" msg
+            readInput()
+
+    let rec gameLoop target =
+        printf "Enter your guess: "
+        let guess = readInput()
+        let bulls, cows = playRound guess target
+        
+        printfn "Bulls: %i | Cows: %i" bulls cows
+        
+        if bulls = 4 then
+            printfn "Congratulations! You've won!"
+        else
+            gameLoop target
+
+[<EntryPoint>]
+let main _ =
+    let target = Game.generateNumber 4
+    //printfn "Target: %A" target  
+    Game.gameLoop target
+    0

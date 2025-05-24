@@ -1,0 +1,47 @@
+module CaesarCipher =
+    open System
+
+    let private shiftChar n c =
+        if Char.IsLetter c then
+            let a = (if Char.IsLower c then 'a' else 'A') |> int
+            (int c - a + n) % 26 + a |> char
+        else c
+
+    let private cipher n s =
+        s |> String.map (shiftChar n)
+
+    let encrypt n : string -> string = cipher n
+    let decrypt n : string -> string = cipher (26 - n)
+
+type CipherOperation = Encrypt | Decrypt
+type CipherParams = { Operation: CipherOperation; Shift: int; Text: string }
+
+let performCipher cipherParams =
+    match cipherParams.Operation with
+    | Encrypt -> CaesarCipher.encrypt cipherParams.Shift cipherParams.Text
+    | Decrypt -> CaesarCipher.decrypt cipherParams.Shift cipherParams.Text
+
+module Program =
+    let run () =
+        let originalText = "Totally normal text to see if this works"
+        let shiftAmount = 1
+
+        let encrypted =
+            { Operation = Encrypt; Shift = shiftAmount; Text = originalText }
+            |> performCipher
+
+        let decrypted =
+            { Operation = Decrypt; Shift = shiftAmount; Text = encrypted }
+            |> performCipher
+
+        let displayResults original encrypted decrypted =
+            printfn "Original: %s" original
+            printfn "Encrypted: %s" encrypted
+            printfn "Decrypted: %s" decrypted
+
+        displayResults originalText encrypted decrypted
+
+[<EntryPoint>]
+let main _ =
+    Program.run ()
+    0

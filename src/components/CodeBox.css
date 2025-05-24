@@ -1,0 +1,68 @@
+.code-box-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.code-language {
+  color: #aaa;
+  font-size: 0.9rem;
+  font-weight: normal;
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.code-box {
+  position: relative;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 100px;
+  max-height: 300px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.fade-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, #1e1e1e);
+  pointer-events: none;
+}
+
+pre {
+  margin: 0;
+  white-space: pre; /* Preserves all whitespace and line breaks */
+  font-family: 'Courier New', monospace;
+  color: #f8f8f8;
+  max-height: 250px;
+  overflow: hidden;
+  width: 100%;
+  display: block;
+}
+
+.code-content {
+  display: inline-block; /* Changed from block to inline-block */
+  text-align: left;
+  padding-left: 0;
+  white-space: pre; /* Ensures original formatting */
+  word-break: keep-all; /* Prevents line breaks */
+  overflow: visible; /* Allows content to extend */
+  max-width: 100%;
+}
+
+.code-box:hover {
+  background-color: #252525;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

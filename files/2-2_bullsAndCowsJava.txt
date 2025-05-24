@@ -1,0 +1,122 @@
+package bullAndCows;
+
+public class BullsAndCowsGame {
+	public static void main(String[] args) {
+        Game game = new Game();
+        game.play();
+    }
+}
+
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+class Game {
+    private int targetNumber;
+    private int guesses;
+    private Scanner input;
+
+    public Game() {
+        this.targetNumber = NumberGenerator.generateRandomNumber();
+        this.guesses = 0;
+        this.input = new Scanner(System.in);
+    }
+
+    public void play() {
+        boolean guessed = false;
+        
+        do {
+            int guess = getValidGuess();
+            guesses++;
+            
+            GuessResult result = evaluateGuess(guess);
+            
+            if (result.isCorrect()) {
+                guessed = true;
+            } else {
+                System.out.println(result.getCows() + " Cows and " + result.getBulls() + " Bulls.");
+            }
+        } while (!guessed);
+        
+        System.out.println("You won after " + guesses + " guesses!");
+        input.close();
+    }
+
+    private int getValidGuess() {
+        while (true) {
+            System.out.print("Guess a 4-digit number with no duplicate digits: ");
+            try {
+                int guess = input.nextInt();
+                if (!NumberGenerator.hasDuplicateDigits(guess) && guess >= 1000 && guess <= 9999) {
+                    return guess;
+                }
+            } catch (InputMismatchException e) {
+                input.next(); // clear the invalid input
+            }
+        }
+    }
+
+    private GuessResult evaluateGuess(int guess) {
+        String targetStr = Integer.toString(targetNumber);
+        String guessStr = Integer.toString(guess);
+        
+        int bulls = 0;
+        int cows = 0;
+        
+        for (int i = 0; i < 4; i++) {
+            if (guessStr.charAt(i) == targetStr.charAt(i)) {
+                bulls++;
+            } else if (targetStr.contains(guessStr.charAt(i) + "")) {
+                cows++;
+            }
+        }
+        
+        return new GuessResult(bulls, cows);
+    }
+}
+
+class GuessResult {
+    private final int bulls;
+    private final int cows;
+
+    public GuessResult(int bulls, int cows) {
+        this.bulls = bulls;
+        this.cows = cows;
+    }
+
+    public int getBulls() {
+        return bulls;
+    }
+
+    public int getCows() {
+        return cows;
+    }
+
+    public boolean isCorrect() {
+        return bulls == 4;
+    }
+}
+
+
+
+
+import java.util.Random;
+
+public class NumberGenerator {
+    public static int generateRandomNumber() {
+        Random gen = new Random();
+        int target;
+        while (hasDuplicateDigits(target = (gen.nextInt(9000) + 1000)));
+        return target;
+    }
+
+    static boolean hasDuplicateDigits(int num) {
+        boolean[] digs = new boolean[10];
+        while (num > 0) {
+            if (digs[num % 10]) return true;
+            digs[num % 10] = true;
+            num /= 10;
+        }
+        return false;
+    }
+}

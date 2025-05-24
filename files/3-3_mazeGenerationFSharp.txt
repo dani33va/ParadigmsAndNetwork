@@ -1,0 +1,92 @@
+let rnd max = 
+    let gen = System.Random()
+    gen.Next(max)
+
+// Randomly choose an element from a list
+let choose (xs: 'a list) =
+    if List.isEmpty xs then failwith "Empty list"
+    else xs.[rnd xs.Length]
+
+type Maze = {
+    Width: int
+    Height: int
+    Visited: bool[,]
+    HorizWalls: bool[,]
+    VertWalls: bool[,]
+}
+
+module Maze =
+    let create width height =
+        {
+            Width = width
+            Height = height
+            Visited = Array2D.create width height false
+            HorizWalls = Array2D.create width height true
+            VertWalls = Array2D.create width height true
+        }
+
+    let isLegalPoint maze (x, y) =
+        x >= 0 && x < maze.Width && y >= 0 && y < maze.Height
+
+    let neighbors maze (x, y) =
+        [(x-1, y); (x+1, y); (x, y-1); (x, y+1)]
+        |> List.filter (isLegalPoint maze)
+
+    let removeWallBetween maze (x1, y1) (x2, y2) =
+        let maze' = { maze with 
+                        HorizWalls = Array2D.copy maze.HorizWalls
+                        VertWalls = Array2D.copy maze.VertWalls }
+        if x1 <> x2 then
+            maze'.HorizWalls.[min x1 x2, y1] <- false
+        else
+            maze'.VertWalls.[x1, min y1 y2] <- false
+        maze'
+
+    let rec visit maze point =
+        let (x, y) = point
+        maze.Visited.[x, y] <- true
+        
+        let rec processNeighbors maze neighbors =
+            match neighbors with
+            | [] -> maze
+            | _ ->
+                let next = choose neighbors
+                let (nx, ny) = next
+                if not maze.Visited.[nx, ny] then
+                    let mazeWithWallRemoved = removeWallBetween maze point next
+                    let mazeAfterVisit = visit mazeWithWallRemoved next
+                    processNeighbors mazeAfterVisit (List.filter ((<>) next) neighbors)
+                else
+                    processNeighbors maze (List.filter ((<>) next) neighbors)
+        
+        processNeighbors maze (neighbors maze point)
+
+    let generate width height =
+        let startX = rnd width
+        let startY = rnd height
+        let initialMaze = create width height
+        visit initialMaze (startX, startY)
+
+    let print maze =
+        let horizontalWall = "+" + String.replicate maze.Width "--+" + "\n"
+        
+        let buildRow y =
+            let verticalWalls =
+                [0..maze.Width-1]
+                |> List.map (fun x -> if maze.HorizWalls.[x,y] then "  |" else "   ")
+                |> String.concat ""
+            
+            let horizontalWalls =
+                [0..maze.Width-1]
+                |> List.map (fun x -> if maze.VertWalls.[x,y] then "--+" else "  +")
+                |> String.concat ""
+            
+            "|" + verticalWalls + "\n+" + horizontalWalls + "\n"
+        
+        let rows = [0..maze.Height-1] |> List.map buildRow |> String.concat ""
+        
+        printfn "%s%s" horizontalWall rows
+
+// Usage
+let maze = Maze.generate 10 10
+Maze.print maze

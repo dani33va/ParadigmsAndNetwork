@@ -1,0 +1,43 @@
+import random
+
+def generate_random_number(size=4):
+    digits = '123456789'
+    return ''.join(random.sample(digits, size))
+
+
+def get_valid_guess(size, guess_count):
+    while True:
+        guess = input(f'\nNext guess [{guess_count}]: ').strip()
+        if (len(guess)) == size and all(char in '123456789' for char in guess) and len(set(guess)) == size:
+            return guess
+        print(f"Problem, try again. You need to enter {size} unique digits from 1 to 9")
+
+
+def count_bulls_and_cows(guess, chosen, size):
+    bulls = cows = 0
+    for i in range(size):
+        if guess[i] == chosen[i]:
+            bulls += 1
+        elif guess[i] in chosen:
+            cows += 1
+    return bulls, cows
+
+
+def play_game(size=4):
+    chosen = generate_random_number(size)
+    print(f'I have chosen a {size}-digit number with unique digits from 1 to 9. Guess it!')
+    
+    guesses = 0
+    while True:
+        guesses += 1
+        guess = get_valid_guess(size, guesses)
+        
+        if guess == chosen:
+            print(f'\nCongratulations! You guessed correctly in {guesses} attempts.')
+            break
+        
+        bulls, cows = count_bulls_and_cows(guess, chosen, size)
+        print(f'  {bulls} Bulls\n  {cows} Cows')
+
+
+play_game()

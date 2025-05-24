@@ -1,0 +1,38 @@
+let rec iterate f value = seq { 
+    yield value
+    yield! iterate f (f value) }
+
+let up i = i + 1
+let right i = i
+let down i = i - 1
+
+let noCollisionGivenDir solution number dir =
+    Seq.forall2 (<>) solution (Seq.skip 1 (iterate dir number))
+
+let goodAddition solution number =
+    List.forall (noCollisionGivenDir solution number) [ up; right; down ]
+
+let rec extendSolution ps =
+    [0..7]  // Only 0-7 for 8x8 board
+    |> List.filter (goodAddition ps)
+    |> List.map (fun num -> num :: ps)
+
+let allSolutions =
+    iterate (List.collect extendSolution) [[]]
+
+// Print one solution for the 8x8 case
+let printSolution solution =
+    solution |> List.iter (fun rowIndex ->
+        printf "|"
+        [0..7] |> List.iter (fun i -> printf (if i = rowIndex then "X|" else " |"))
+        printfn "")
+
+// Get all 92 solutions for 8x8 board
+let solutions8x8 = 
+    allSolutions |> Seq.item 8  // Get complete solutions (8 queens placed)
+
+// Print the first solution
+solutions8x8 |> Seq.head |> printSolution
+
+// Print the total number of solutions (should be 92)
+printfn "\nTotal solutions for 8x8 board: %d" (Seq.length solutions8x8)
