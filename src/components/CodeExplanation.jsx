@@ -14,12 +14,20 @@ const CodeExplanation = () => {
   
   const sections = codeSections[algorithm]?.[lang] || [];
 
+  const handleShowFullCode = () => {
+    navigate(`/${algorithm}/${lang}/full-code`, {
+      state: { content, language, title }
+    });
+  };
+
   if (!content) {
     return (
       <div className="code-explanation-container">
         <div className="content-wrapper">
           <h1>Error: No code content found</h1>
-          <button onClick={() => navigate('/')}>Back to Home</button>
+          <button className="back-button" onClick={() => navigate('/')}>
+            Back to Home
+          </button>
         </div>
       </div>
     );
@@ -86,21 +94,12 @@ const CodeExplanation = () => {
           ))}
         </div>
 
-        {/* New full code box */}
-        <div className="full-code-container">
-          <h3 className="full-code-title">Complete Code</h3>
-          <div className="full-code-content">
-            <pre>
-              <code>
-                {content}
-              </code>
-            </pre>
-          </div>
-        </div>
-
-        <div className="back-button-container">
+        <div className="button-container">
           <button className="back-button" onClick={() => navigate('/')}>
             Back to Home
+          </button>
+          <button className="full-code-button" onClick={handleShowFullCode}>
+            Show Full Code
           </button>
         </div>
       </div>

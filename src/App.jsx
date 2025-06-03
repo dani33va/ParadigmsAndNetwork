@@ -2,6 +2,7 @@ import React from 'react';
 import CodeBox from './components/CodeBox.jsx';
 import { Routes, Route } from 'react-router-dom';
 import CodeExplanation from './components/CodeExplanation';
+import FullCodeView from './components/FullCodeView'; // Import the new component
 import './App.css';
 
 const App = () => {
@@ -37,15 +38,12 @@ const App = () => {
     }
   ];
 
-
-  
-
   return (
-  <div className="page-container"> {/* Changed from landing-page to page-container */}
-    <Routes>
-      <Route path="/" element={
-        <div className="content-wrapper">
-          <h1 className="main-title">Programming paradigms</h1>            
+    <div className="page-container">
+      <Routes>
+        <Route path="/" element={
+          <div className="content-wrapper">
+            <h1 className="main-title">Programming paradigms</h1>            
             <div className="sections-container">
               {sections.map((section, index) => (
                 <div key={index} className="section">
@@ -66,6 +64,7 @@ const App = () => {
           </div>
         } />
         <Route path="/:algorithm/:language" element={<CodeExplanation />} />
+        <Route path="/:algorithm/:language/full-code" element={<FullCodeView />} />
       </Routes>
     </div>
   );
