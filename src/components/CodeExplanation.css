@@ -1,21 +1,25 @@
+/* Reset and base styles */
+.code-explanation-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 /* Main container */
 .code-explanation-container {
-  display: flex;
-  justify-content: center;
   background-color: #121212;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #ffffff;
   min-height: 100vh;
+  padding: 20px;
+  color: #ffffff;
 }
 
 /* Content wrapper */
 .content-wrapper {
   max-width: 1000px;
-  width: 100%;
+  margin: 0 auto;
   background-color: #1e1e1e;
   padding: 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
 }
 
@@ -23,10 +27,9 @@
 .main-title {
   text-align: center;
   margin-bottom: 30px;
-  color: #ffffff;
   font-size: 2.2rem;
-  border-bottom: 2px solid #333;
   padding-bottom: 15px;
+  border-bottom: 2px solid #333;
 }
 
 /* Sections container */
@@ -37,40 +40,22 @@
   margin-bottom: 40px;
 }
 
-/* Individual section styling */
+/* Explanation section - base */
 .explanation-section {
   display: flex;
   gap: 20px;
-  align-items: center;
-}
-
-/* Centered explanation when no code */
-.explanation-section.no-code {
-  justify-content: center;
-}
-
-.centered-explanation {
-  width: 100%;
-  max-width: 800px;
-  padding: 20px;
-  background-color: #252525;
-  border-radius: 6px;
-  line-height: 1.6;
-  font-size: 1rem;
-  color: #f8f8f8;
-  text-align: center;
 }
 
 /* Alternate section directions */
-.explanation-section.left-right {
+.left-right {
   flex-direction: row;
 }
 
-.explanation-section.right-left {
+.right-left {
   flex-direction: row-reverse;
 }
 
-/* Explanation text styling */
+/* Text content styling */
 .explanation-text {
   flex: 1;
   padding: 20px;
@@ -78,39 +63,49 @@
   border-radius: 6px;
   line-height: 1.6;
   font-size: 1rem;
-  color: #f8f8f8;
   display: flex;
-  align-items: center;
+  align-items: center; /* This vertically centers the content */
+  justify-content: center; /* This horizontally centers the content (optional) */
+  min-height: 100%; /* Ensures it takes full height of parent */
 }
 
-.explanation-text p {
-  margin: 0;
-}
-
-/* Code preview styling */
+/* Code preview container */
 .code-preview {
   flex: 1;
-  padding: 15px;
+  max-height: none; /* Remove any height restrictions */
+  overflow: visible; /* Change from auto to visible */
+}
+
+/* Code block styling */
+.code-preview pre {
   background-color: #282c34;
   color: #abb2bf;
   border-radius: 6px;
-  overflow-x: auto;
-  display: flex;
-  align-items: center;
-}
-
-.code-preview pre {
+  padding: 15px;
   margin: 0;
+  overflow: visible;
+  white-space: pre-wrap;
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 0.9rem;
   line-height: 1.5;
-  white-space: pre-wrap;
+  max-height: none; /* Ensure no max-height is set */
 }
 
+/* Ellipsis styling */
 .code-ellipsis {
   color: #777;
   text-align: center;
   margin: 10px 0;
+  font-size: 1.2rem;
+}
+
+/* Centered explanation when no code */
+.centered-explanation {
+  width: 100%;
+  padding: 20px;
+  background-color: #252525;
+  border-radius: 6px;
+  text-align: center;
 }
 
 /* Button container */
@@ -121,11 +116,10 @@
   margin-top: 30px;
 }
 
-/* Button styling */
-.back-button {
+/* Button base styles */
+.back-button,
+.full-code-button {
   padding: 10px 20px;
-  background-color: #2c3e50;
-  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -133,15 +127,14 @@
   transition: background-color 0.3s;
 }
 
+.back-button {
+  background-color: #2c3e50;
+  color: white;
+}
+
 .full-code-button {
-  padding: 10px 20px;
   background-color: #27ae60;
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
 }
 
 .back-button:hover {
@@ -158,17 +151,10 @@
     padding: 20px;
   }
   
-  .explanation-section {
+  .explanation-section,
+  .left-right,
+  .right-left {
     flex-direction: column;
-  }
-  
-  .explanation-section.left-right,
-  .explanation-section.right-left {
-    flex-direction: column;
-  }
-  
-  .code-preview {
-    width: 100%;
   }
   
   .main-title {
