@@ -1,7 +1,8 @@
 import React from 'react';
-import './App.css';
 import CodeBox from './components/CodeBox.jsx';
-
+import { Routes, Route } from 'react-router-dom';
+import CodeExplanation from './components/CodeExplanation';
+import './App.css';
 
 const App = () => {
   const sections = [
@@ -40,28 +41,32 @@ const App = () => {
   
 
   return (
-    <div className="landing-page">
-      <div className="content-wrapper">
-        <h1 className="main-title">Programming paradigms</h1>
-        
-        <div className="sections-container">
-          {sections.map((section, index) => (
-            <div key={index} className="section">
-              <h2 className="section-title">{section.title}</h2>
-              <div className="boxes-container">
-                {section.boxes.map((box, boxIndex) => (
-                  <CodeBox 
-                    key={boxIndex} 
-                    filePath={box.file}
-                    redirectUrl={box.url} 
-                    language={box.language} 
-                  />
-                ))}
-              </div>
+  <div className="page-container"> {/* Changed from landing-page to page-container */}
+    <Routes>
+      <Route path="/" element={
+        <div className="content-wrapper">
+          <h1 className="main-title">Programming paradigms</h1>            
+            <div className="sections-container">
+              {sections.map((section, index) => (
+                <div key={index} className="section">
+                  <h2 className="section-title">{section.title}</h2>
+                  <div className="boxes-container">
+                    {section.boxes.map((box, boxIndex) => (
+                      <CodeBox 
+                        key={boxIndex} 
+                        filePath={box.file}
+                        redirectUrl={box.url} 
+                        language={box.language} 
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        } />
+        <Route path="/:algorithm/:language" element={<CodeExplanation />} />
+      </Routes>
     </div>
   );
 };

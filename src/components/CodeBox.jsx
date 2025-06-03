@@ -26,7 +26,16 @@ const CodeBox = ({ filePath, language, redirectUrl }) => {
   const hasMoreLines = content.split('\n').length > 10;
 
   const handleClick = () => {
-    navigate(redirectUrl); 
+    const parts = redirectUrl.split('/').filter(part => part !== '');
+    const algorithm = parts[0];
+    const language = parts[1];
+    navigate(redirectUrl,  { 
+      state: { 
+        content,
+        language,
+        title: `${algorithm} in ${language}` 
+      }
+    } ); 
   };
 
   return (
